@@ -13,7 +13,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 import java.net.http.HttpRequest;
 
-@Route("")
+@Route("Login")
 public class LoginView extends LoginOverlay {
 
     private final LoginOverlay loginOverlay = new LoginOverlay();

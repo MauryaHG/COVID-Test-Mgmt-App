@@ -3,7 +3,6 @@ package com.example.demo.users;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import elemental.json.impl.JreJsonObject;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.io.IOException;
