@@ -6,13 +6,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.login.LoginForm;
+import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
 import io.github.cdimascio.dotenv.Dotenv;
 
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 
 import java.io.IOException;
 import java.net.URI;
@@ -21,31 +27,49 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpRequest;
 
 @Route("Login")
-public class LoginView extends LoginOverlay {
+public class LoginView extends VerticalLayout {
 
     private final LoginOverlay loginOverlay = new LoginOverlay();
+    private final LoginForm loginForm = new LoginForm();
 
-   //load own api key from env variables
+    //load own api key from env variables
     Dotenv dotenv = Dotenv.load();
     private final String myApiKey = dotenv.get("API_KEY");
 
     // Provide the root URL for the web service. All web service request URLs start with this root URL.
     private static final String rootUrl = "https://fit3077.com/api/v1";
 
+    private final Button browseButton = new Button("Browse sites");
 
 
     public LoginView() throws Exception {
 
-        //create login form using vaadin components
-        loginOverlay.setTitle("Covid Gov");
-        loginOverlay.setDescription("");
-        loginOverlay.setOpened(true);
-        loginOverlay.setForgotPasswordButtonVisible(false);
+        setSizeFull();
+        setAlignItems(Alignment.CENTER);
+        setJustifyContentMode(JustifyContentMode.CENTER);
 
+
+        LoginI18n i18n = LoginI18n.createDefault();
+        LoginI18n.Form i18nForm = i18n.getForm();
+        i18nForm.setTitle("Covid Gov");
+        i18nForm.setUsername("Username");
+        i18nForm.setPassword("Password");
+        i18nForm.setSubmit("Log in");
+        i18nForm.setForgotPassword("Browse testing sites");
+        i18n.setForm(i18nForm);
+
+        LoginI18n.ErrorMessage i18nErrorMessage = i18n.getErrorMessage();
+        i18nErrorMessage.setTitle("Wrong username or password");
+        i18nErrorMessage.setMessage("Please check that your username and password are correct and try again.");
+        i18n.setErrorMessage(i18nErrorMessage);
+
+
+        loginForm.setI18n(i18n);
+        add(loginForm);
         //add onclicklistener to login button to call authenticate method
-        loginOverlay.addLoginListener(event -> authenticateLogin(event.getUsername(), event.getPassword()));
+        loginForm.addLoginListener(event -> authenticateLogin(event.getUsername(), event.getPassword()));
 
-
+        loginForm.addForgotPasswordListener(event ->UI.getCurrent().getPage().setLocation("Booking"));
 
     }
 
@@ -92,7 +116,7 @@ public class LoginView extends LoginOverlay {
         //check response's status code to see if login info is valid or not
         assert response != null;
         if (response.statusCode() ==403) {
-            loginOverlay.setError(true);
+            loginForm.setError(true);
         }else if (response.statusCode() == 200){
             try {
                     ObjectMapper om = new ObjectMapper();

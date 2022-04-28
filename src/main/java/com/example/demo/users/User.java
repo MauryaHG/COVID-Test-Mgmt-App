@@ -1,12 +1,9 @@
 package com.example.demo.users;
 
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import com.vaadin.flow.router.Route;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper; // version 2.11.1
-import com.fasterxml.jackson.annotation.JsonProperty; // version 2.11.1
 import java.util.ArrayList;
 
 @Route("User")
