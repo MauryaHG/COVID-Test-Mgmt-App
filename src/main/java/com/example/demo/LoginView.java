@@ -1,12 +1,18 @@
 package com.example.demo;
 
 
+import com.example.demo.users.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.Route;
 import io.github.cdimascio.dotenv.Dotenv;
 
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 
 import java.io.IOException;
 import java.net.URI;
@@ -88,6 +94,13 @@ public class LoginView extends LoginOverlay {
         if (response.statusCode() ==403) {
             loginOverlay.setError(true);
         }else if (response.statusCode() == 200){
+            try {
+                    ObjectMapper om = new ObjectMapper();
+                    User currentUser = om.readValue(getUserData(username), User.class);
+                System.out.println(currentUser);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             Notification.show("Logged in");
             UI.getCurrent().getPage().setLocation("Booking");
 
@@ -96,5 +109,54 @@ public class LoginView extends LoginOverlay {
         }
 
     }
+     public String getUserData(String username) throws Exception {
+
+         String usersUrl = rootUrl + "/user";
+         ObjectNode userNode = null;
+
+         // This request is authenticated (API key attached in the Authorization header), and will return the JSON array object containing all users.
+         HttpClient client = HttpClient.newHttpClient();
+         HttpRequest request = HttpRequest
+                 .newBuilder(URI.create(usersUrl))
+                 .setHeader("Authorization", myApiKey)
+                 .GET()
+                 .build();
+
+         HttpResponse<String> response = null;
+
+         try {
+             response = client.send(request, HttpResponse.BodyHandlers.ofString());
+         } catch (IOException | InterruptedException e) {
+             e.printStackTrace();
+         }
+
+
+         // Error checking for this sample code. You can check the status code of your request, as part of performing error handling in your assignment.
+         if (response.statusCode() != 200) {
+             throw new Exception("Error in api call");
+         }
+
+         ObjectNode[] jsonNodes = new ObjectNode[0];
+         try {
+             jsonNodes = new ObjectMapper().readValue(response.body(), ObjectNode[].class);
+         } catch (JsonProcessingException e) {
+             e.printStackTrace();
+         }
+
+         for (int i = 0; i < jsonNodes.length; i++) {
+             ObjectNode userObject = jsonNodes[i];
+             if (userObject.get("userName").textValue().equals(username)){
+                 userNode = jsonNodes[i];
+
+             }
+         }
+         System.out.println("Part 2\n----");
+         System.out.println(request.uri());
+         System.out.println("Response code: " + response.statusCode());
+         System.out.println("Full JSON response: " + response.body());
+         System.out.println(userNode);
+
+         return userNode.toString();
+     }
 
 }
