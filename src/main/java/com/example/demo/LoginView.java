@@ -61,7 +61,7 @@ public class LoginView extends VerticalLayout {
         //add onclicklistener to login button to call authenticate method
         loginForm.addLoginListener(event -> authenticateLogin(event.getUsername(), event.getPassword()));
 
-        loginForm.addForgotPasswordListener(event ->UI.getCurrent().getPage().setLocation("Booking"));
+        loginForm.addForgotPasswordListener(event ->UI.getCurrent().getPage().setLocation("Browse"));
 
     }
 

@@ -89,6 +89,7 @@ public class BrowseSitesView extends VerticalLayout{
         grid.addClassName("testing-site-grid");
         grid.setSizeFull();
         grid.setColumns("name", "suburb", "facilityType", "providesOnsiteTesting", "providesOnsiteBooking", "openingHours", "estimatedWaitTime");
+        grid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
 
 }
