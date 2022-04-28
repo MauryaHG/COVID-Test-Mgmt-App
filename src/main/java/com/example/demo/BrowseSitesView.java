@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.example.demo.TestingSite.TestSiteTable;
+import com.example.demo.TestingSite.TestingSite;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.flow.component.Component;
@@ -22,7 +24,6 @@ import java.util.List;
 
 @Route(value = "Browse")
 public class BrowseSitesView extends VerticalLayout{
-    List<TestingSite> sites;
     Grid<TestSiteTable> grid = new Grid<>(TestSiteTable.class);
     TextField filterText = new TextField();
 
