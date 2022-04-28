@@ -6,25 +6,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import io.github.cdimascio.dotenv.Dotenv;
-
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.HttpResponse;
 import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 @Route("Login")
 public class LoginView extends VerticalLayout {
@@ -38,9 +33,6 @@ public class LoginView extends VerticalLayout {
 
     // Provide the root URL for the web service. All web service request URLs start with this root URL.
     private static final String rootUrl = "https://fit3077.com/api/v1";
-
-    private final Button browseButton = new Button("Browse sites");
-
 
     public LoginView() throws Exception {
 
@@ -121,6 +113,8 @@ public class LoginView extends VerticalLayout {
             try {
                     ObjectMapper om = new ObjectMapper();
                     User currentUser = om.readValue(getUserData(username), User.class);
+                VaadinSession session = VaadinSession.getCurrent() ;   // Fetch current instance of `VaadinSession` to use its key-value collection of attributes.
+                session.setAttribute( User.class , currentUser ) ;
                 System.out.println(currentUser);
             } catch (Exception e) {
                 e.printStackTrace();

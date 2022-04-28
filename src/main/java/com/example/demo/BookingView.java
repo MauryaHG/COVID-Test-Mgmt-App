@@ -1,7 +1,11 @@
 package com.example.demo;
 
 import com.example.demo.users.Booking;
+import com.example.demo.users.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
@@ -15,7 +19,15 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
+import io.github.cdimascio.dotenv.Dotenv;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,6 +43,15 @@ public class BookingView extends VerticalLayout {
     EmailField email = new EmailField("Email");
     DatePicker bookingDate = new DatePicker("Booking Date");
     TextField siteId = new TextField("Site ID");
+
+
+
+    Dotenv dotenv = Dotenv.load();
+    private final String myApiKey = dotenv.get("API_KEY");
+
+    // Provide the root URL for the web service. All web service request URLs start with this root URL.
+    private static final String rootUrl = "https://fit3077.com/api/v1";
+
 
     private Button bookButton = new Button("Book");
     private ArrayNode errorsLayout;
@@ -98,6 +119,7 @@ public class BookingView extends VerticalLayout {
                 Booking newBooking = new Booking();
                 binder.writeBean(newBooking);
                 //addOrder(newBooking); (3)
+                addBooking(newBooking);
                 binder.readBean(new Booking());
                 System.out.println(newBooking);
             } catch (ValidationException e) {
@@ -109,5 +131,58 @@ public class BookingView extends VerticalLayout {
         return null;
     }
 
+    private void addBooking(Booking newBooking) {
+        VaadinSession session = VaadinSession.getCurrent();   // Fetch current instance of `VaadinSession` to use its key-value collection of attributes.
+        User currentUser = session.getAttribute(User.class);
+
+        String userID = currentUser.id;
+        String testingSiteId = "7fbd25ee-5b64-4720-b1f6-4f6d4731260e";
+        LocalDate startTime = newBooking.getStartTime();
+        String notes = "test book";
+
+
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        // create a JSON object
+        ObjectNode booking = mapper.createObjectNode();
+        booking.put("customerId", userID);
+        booking.put("testingSiteId", testingSiteId);
+        booking.put("startTime", startTime.toString());
+        booking.put("notes", notes);
+        ObjectNode additionalInfo = mapper.createObjectNode();
+        additionalInfo.put("test","test");
+        booking.set("additionalInfo", additionalInfo);
+
+        String jsonString = null;
+        try {
+            jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(booking);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        String userBookingUrl = rootUrl + "/booking";
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = null;
+        HttpRequest request = HttpRequest.newBuilder(URI.create(userBookingUrl + "?jwt=true")) // Return a JWT so we can use it in Part 5 later.
+                .setHeader("Authorization", myApiKey)
+                .header("Content-Type","application/json") // This header needs to be set when sending a JSON request body.
+                .POST(HttpRequest.BodyPublishers.ofString(jsonString))
+                .build();
+
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Part 4\n----");
+        System.out.println(request.uri());
+        System.out.println("Response code: " + response.statusCode());
+        System.out.println("Full JSON response: " + response.body()); // The JWT token that has just been issued will be returned since we set ?jwt=true.
+        System.out.println("----\n\n");
+    }
 
 }
