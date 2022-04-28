@@ -1,7 +1,5 @@
 package com.example.demo;
 
-import com.example.demo.TestingSite.TestSiteTable;
-import com.example.demo.TestingSite.TestingSite;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.flow.component.Component;
