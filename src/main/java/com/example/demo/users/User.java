@@ -3,6 +3,7 @@ package com.example.demo.users;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.vaadin.flow.router.Route;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 import java.net.http.HttpRequest;
 
-
+@Route("User")
 public class User {
 
     Dotenv dotenv = Dotenv.load();

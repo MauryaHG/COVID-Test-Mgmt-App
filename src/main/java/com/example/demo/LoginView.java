@@ -1,6 +1,7 @@
 package com.example.demo;
 
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.Route;
@@ -88,6 +89,8 @@ public class LoginView extends LoginOverlay {
             loginOverlay.setError(true);
         }else if (response.statusCode() == 200){
             Notification.show("Logged in");
+            UI.getCurrent().getPage().setLocation("Booking");
+
         }else{
             Notification.show("error");
         }
