@@ -34,8 +34,13 @@ public class LoginView extends VerticalLayout {
     // Provide the root URL for the web service. All web service request URLs start with this root URL.
     private static final String rootUrl = "https://fit3077.com/api/v1";
 
+
+    /**
+     * creates the login form UI
+     */
     public LoginView() throws Exception {
 
+        // create form elements
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -55,16 +60,21 @@ public class LoginView extends VerticalLayout {
         i18nErrorMessage.setMessage("Please check that your username and password are correct and try again.");
         i18n.setErrorMessage(i18nErrorMessage);
 
-
         loginForm.setI18n(i18n);
         add(loginForm);
-        //add onclicklistener to login button to call authenticate method
+        //add onclicklistener to login button to call authenticate method and browse sites button.
         loginForm.addLoginListener(event -> authenticateLogin(event.getUsername(), event.getPassword()));
 
         loginForm.addForgotPasswordListener(event ->UI.getCurrent().getPage().setLocation("Browse"));
 
     }
 
+
+    /**
+     * send GET request to web service to verify user login information and redirects user to booking page
+     * @param username username entered by user
+     * @param password password entered by user
+     */
     public void authenticateLogin(String username, String password){
         // To get a specific resource from the web service, extend the root URL by appending the resource type you are looking for.
         // For example: [root_url]/user will return a JSON array object containing all users.
@@ -93,7 +103,7 @@ public class LoginView extends VerticalLayout {
         // A request body needs to be supplied to this endpoint, otherwise a 400 Bad Request error will be returned.
         String usersLoginUrl = usersUrl + "/login";
         client = HttpClient.newHttpClient();
-        request = HttpRequest.newBuilder(URI.create(usersLoginUrl + "?jwt=true")) // Return a JWT so we can use it in Part 5 later.
+        request = HttpRequest.newBuilder(URI.create(usersLoginUrl + "?jwt=true"))
                 .setHeader("Authorization", myApiKey)
                 .header("Content-Type","application/json") // This header needs to be set when sending a JSON request body.
                 .POST(HttpRequest.BodyPublishers.ofString(jsonString))
@@ -111,6 +121,7 @@ public class LoginView extends VerticalLayout {
             loginForm.setError(true);
         }else if (response.statusCode() == 200){
             try {
+                    //
                     ObjectMapper om = new ObjectMapper();
                     User currentUser = om.readValue(getUserData(username), User.class);
                 VaadinSession session = VaadinSession.getCurrent() ;   // Fetch current instance of `VaadinSession` to use its key-value collection of attributes.
@@ -127,6 +138,12 @@ public class LoginView extends VerticalLayout {
         }
 
     }
+
+    /**
+     * send GET request to web service to get all users and find logged in user
+     * then data is sent back so new user object can be created.
+     * @param username username entered by user
+     */
      public String getUserData(String username) throws Exception {
 
          String usersUrl = rootUrl + "/user";
@@ -168,12 +185,6 @@ public class LoginView extends VerticalLayout {
 
              }
          }
-         System.out.println("Part 2\n----");
-         System.out.println(request.uri());
-         System.out.println("Response code: " + response.statusCode());
-         System.out.println("Full JSON response: " + response.body());
-         System.out.println(userNode);
-
          return userNode.toString();
      }
 

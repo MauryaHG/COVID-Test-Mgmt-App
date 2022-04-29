@@ -6,6 +6,9 @@ import com.vaadin.flow.router.Route;
 
 import java.util.ArrayList;
 
+/**
+ * user class to be created
+ */
 @Route("User")
 public class User {
 

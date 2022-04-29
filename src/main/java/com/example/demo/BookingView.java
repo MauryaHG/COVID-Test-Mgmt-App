@@ -33,9 +33,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Route("Booking")
-
+/**
+ * creates booking page UI
+ */
 public class BookingView extends VerticalLayout {
 
+    //Vaadin UI elements
     TextField firstName = new TextField("First name");
     TextField lastName = new TextField("Last name");
     TextField username = new TextField("Username");
@@ -46,7 +49,7 @@ public class BookingView extends VerticalLayout {
     TextField siteId = new TextField("Site ID");
 
 
-
+    //retrieve api key from env variables
     Dotenv dotenv = Dotenv.load();
     private final String myApiKey = dotenv.get("API_KEY");
 
@@ -54,8 +57,11 @@ public class BookingView extends VerticalLayout {
     // Provide the root URL for the web service. All web service request URLs start with this root URL.
     private static final String rootUrl = "https://fit3077.com/api/v1";
 
-    private Button bookButton = new Button("Book");
+    private final Button bookButton = new Button("Book");
 
+    /**
+     * add UI elements to page
+     */
     public BookingView(){
 
         FormLayout formLayout = new FormLayout();
@@ -87,6 +93,10 @@ public class BookingView extends VerticalLayout {
 
         buildForm();
     }
+
+    /**
+     * get user input and bind date to booking class object
+     */
     private Component buildForm(){
 
         Binder<Booking> binder = new Binder<>(Booking.class);
@@ -109,7 +119,7 @@ public class BookingView extends VerticalLayout {
         binder.readBean(new Booking());
 
         binder.addStatusChangeListener(status -> {
-                    boolean emptyFields = Stream.of("name", "quantity", "snack")
+                    boolean emptyFields = Stream.of("firstName", "lastName", "bookingDate")
                             .flatMap(prop -> binder.getBinding(prop).stream())
                             .anyMatch(binding -> binding.getField().isEmpty());
                     bookButton.setEnabled(!emptyFields);
@@ -134,7 +144,10 @@ public class BookingView extends VerticalLayout {
         });
         return null;
     }
-
+    /**
+     * sends POST request to webs service to add new booking to the database
+     * @param newBooking booking object created
+     */
     private void addBooking(Booking newBooking) {
         VaadinSession session = VaadinSession.getCurrent();   // Fetch current instance of `VaadinSession` to use its key-value collection of attributes.
         User currentUser = session.getAttribute(User.class);
@@ -154,8 +167,9 @@ public class BookingView extends VerticalLayout {
         booking.put("testingSiteId", testingSiteId);
         booking.put("startTime", startTime.toString());
         booking.put("notes", notes);
+        //create JSON object for additional data
         ObjectNode additionalInfo = mapper.createObjectNode();
-        additionalInfo.put("test","test");
+        additionalInfo.put("QRcode","Dummy QR");
         booking.set("additionalInfo", additionalInfo);
 
         String jsonString = null;
@@ -165,12 +179,13 @@ public class BookingView extends VerticalLayout {
             e.printStackTrace();
         }
 
+        //POST request
         String userBookingUrl = rootUrl + "/booking";
         HttpClient client = HttpClient.newHttpClient();
         HttpResponse<String> response = null;
-        HttpRequest request = HttpRequest.newBuilder(URI.create(userBookingUrl + "?jwt=true")) // Return a JWT so we can use it in Part 5 later.
+        HttpRequest request = HttpRequest.newBuilder(URI.create(userBookingUrl))
                 .setHeader("Authorization", myApiKey)
-                .header("Content-Type","application/json") // This header needs to be set when sending a JSON request body.
+                .header("Content-Type","application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonString))
                 .build();
 
@@ -181,7 +196,7 @@ public class BookingView extends VerticalLayout {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Notification.show(("Booking complete. Pin sent to phone"));
+        Notification.show(("Booking complete. PIN/QR sent to phone"));
     }
 
 }

@@ -2,7 +2,9 @@ package com.example.demo.system;
 
 import java.time.LocalDate;
 
-
+/**
+ * Booking class used to store booking information
+ */
 public class Booking {
 
 
