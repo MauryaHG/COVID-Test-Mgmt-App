@@ -12,6 +12,7 @@ import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -129,6 +130,7 @@ public class BookingView extends VerticalLayout {
                         .map(res -> "<p>" + res.getErrorMessage() + "</p>")
                         .collect(Collectors.joining("\n")))));
             }
+
         });
         return null;
     }
@@ -138,7 +140,7 @@ public class BookingView extends VerticalLayout {
         User currentUser = session.getAttribute(User.class);
 
         String userID = currentUser.id;
-        String testingSiteId = "7fbd25ee-5b64-4720-b1f6-4f6d4731260e";
+        String testingSiteId = newBooking.getTestingSiteId();
         LocalDate startTime = newBooking.getStartTime();
 
 
@@ -179,12 +181,7 @@ public class BookingView extends VerticalLayout {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        System.out.println("Part 4\n----");
-        System.out.println(request.uri());
-        System.out.println("Response code: " + response.statusCode());
-        System.out.println("Full JSON response: " + response.body()); // The JWT token that has just been issued will be returned since we set ?jwt=true.
-        System.out.println("----\n\n");
+        Notification.show(("Booking complete. Pin sent to phone"));
     }
 
 }
