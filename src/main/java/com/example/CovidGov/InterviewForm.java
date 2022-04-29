@@ -16,7 +16,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 @Route(value = "Interview")
-public class InterviewView extends VerticalLayout {
+public class InterviewForm extends VerticalLayout {
 
     //load own api key from env variables
     Dotenv dotenv = Dotenv.load();
@@ -25,7 +25,7 @@ public class InterviewView extends VerticalLayout {
     // Provide the root URL for the web service. All web service request URLs start with this root URL.
     private static final String rootUrl = "https://fit3077.com/api/v1";
 
-    public InterviewView() throws Exception {
+    public InterviewForm() throws Exception {
         String testingSiteUrl = rootUrl + "/testing-site";
 
         //Performing GET requests that return an array of objects.

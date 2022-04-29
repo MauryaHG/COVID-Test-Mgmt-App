@@ -64,6 +64,8 @@ public class BookingForm extends VerticalLayout {
      */
     public BookingForm(){
 
+
+        //Create page UI
         FormLayout formLayout = new FormLayout();
         VerticalLayout layout = new VerticalLayout();
 
@@ -89,13 +91,13 @@ public class BookingForm extends VerticalLayout {
         layout.setSizeFull();
         layout.setAlignItems(Alignment.CENTER);
 
-        buildForm();
+        createBooking();
     }
 
     /**
      * get user input and bind date to booking class object
      */
-    private Component buildForm(){
+    private Component createBooking(){
 
         Binder<Booking> binder = new Binder<>(Booking.class);
         binder.forField(firstName)
@@ -147,14 +149,13 @@ public class BookingForm extends VerticalLayout {
      * @param newBooking booking object created
      */
     private void addBooking(Booking newBooking) {
+        //get logged in user from vaadin session.
         VaadinSession session = VaadinSession.getCurrent();   // Fetch current instance of `VaadinSession` to use its key-value collection of attributes.
         User currentUser = session.getAttribute(User.class);
 
         String userID = currentUser.id;
         String testingSiteId = newBooking.getTestingSiteId();
         LocalDate startTime = newBooking.getStartTime();
-
-
 
 
         ObjectMapper mapper = new ObjectMapper();

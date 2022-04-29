@@ -1,6 +1,6 @@
 package com.example.CovidGov.TestingSite;
 
-public class myAddress{
+public class siteAddress {
     public void setLatitude(long latitude) {
         this.latitude = latitude;
     }

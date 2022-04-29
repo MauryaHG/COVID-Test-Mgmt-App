@@ -19,7 +19,7 @@ public class TestingSite {
     private String description;
     private String websiteUrl;
     private String phoneNumber;
-    private myAddress address;
+    private siteAddress address;
     private String createdAt;
     private String updatedAt;
     private AdditionalInfo additionalInfo;
@@ -44,7 +44,7 @@ public class TestingSite {
         this.phoneNumber = phoneNumber;
     }
 
-    public void setAddress(myAddress address) {
+    public void setAddress(siteAddress address) {
         this.address = address;
     }
 
@@ -80,7 +80,7 @@ public class TestingSite {
         return phoneNumber;
     }
 
-    public myAddress getAddress() {
+    public siteAddress getAddress() {
         return address;
     }
 

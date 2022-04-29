@@ -24,7 +24,7 @@ import java.util.List;
 
 
 @Route(value = "Browse")
-public class BrowseSitesView extends VerticalLayout{
+public class BrowseSites extends VerticalLayout{
     Grid<TestSiteTable> grid = new Grid<>(TestSiteTable.class);
     TextField filterText = new TextField();
 
@@ -35,7 +35,7 @@ public class BrowseSitesView extends VerticalLayout{
     // Provide the root URL for the web service. All web service request URLs start with this root URL.
     private static final String rootUrl = "https://fit3077.com/api/v1";
 
-    public BrowseSitesView() throws Exception{
+    public BrowseSites() throws Exception{
         String testingSiteUrl = rootUrl + "/testing-site";
 
         //Performing GET requests that return an array of objects.
