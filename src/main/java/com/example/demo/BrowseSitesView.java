@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.TestingSite.TestSiteTable;
 import com.example.demo.TestingSite.TestingSite;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.flow.component.Component;
@@ -30,7 +31,7 @@ public class BrowseSitesView extends VerticalLayout{
     //load own api key from env variables
     Dotenv dotenv = Dotenv.load();
     private final String myApiKey = dotenv.get("API_KEY");
-
+    private ObjectNode[] jsonNodes;
     // Provide the root URL for the web service. All web service request URLs start with this root URL.
     private static final String rootUrl = "https://fit3077.com/api/v1";
 
@@ -49,7 +50,7 @@ public class BrowseSitesView extends VerticalLayout{
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // The GET /user endpoint returns a JSON array, so we can loop through the response as we could with a normal array/list.
-        ObjectNode[] jsonNodes = new ObjectMapper().readValue(response.body(), ObjectNode[].class);
+       jsonNodes = new ObjectMapper().readValue(response.body(), ObjectNode[].class);
 
         ObjectMapper mapper = new ObjectMapper();
         List<TestSiteTable> siteList = new ArrayList<TestSiteTable>();
@@ -74,11 +75,33 @@ public class BrowseSitesView extends VerticalLayout{
 
 
     private Component getToolbar() {
-        filterText.setPlaceholder("Filter by name...");
+        filterText.setPlaceholder("Search suburb");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
 
         Button browseSiteButton = new Button("Browse site");
+
+        browseSiteButton.addClickListener(event -> {
+
+            ObjectMapper mapper = new ObjectMapper();
+            List<TestSiteTable> siteList = new ArrayList<TestSiteTable>();
+            for (ObjectNode node: jsonNodes) {
+                TestingSite site = null;
+
+                try {
+                    site = mapper.readValue(node.toString(), TestingSite.class);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+                TestSiteTable informativeSite = new TestSiteTable(site.getName(), site.getAddress().getSuburb(), site.getAdditionalInfo().getFacilityType(), site.getAdditionalInfo().isProvidesOnsiteTesting(), site.getAdditionalInfo().isProvidesOnsiteBooking(), site.getAdditionalInfo().getOpeningTimes(), site.getAdditionalInfo().getEstimatedWaitTime());
+                if(informativeSite.getSuburb().equals(filterText.getValue())){
+                    siteList.add(informativeSite);
+                    System.out.println(informativeSite);
+                }
+                grid.setItems(siteList);
+            }
+        });
 
         HorizontalLayout toolbar = new HorizontalLayout(filterText, browseSiteButton);
         toolbar.addClassName("toolbar");
