@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -25,7 +26,7 @@ import java.util.List;
 public class BrowseSites extends VerticalLayout{
     Grid<TestSiteTable> grid = new Grid<>(TestSiteTable.class);
     TextField filterText = new TextField();
-
+    Button loginPageButton = new Button("Login");
     //load own api key from env variables
     Dotenv dotenv = Dotenv.load();
     private final String myApiKey = dotenv.get("API_KEY");
@@ -69,6 +70,9 @@ public class BrowseSites extends VerticalLayout{
                 getToolbar(),
                 grid
         );
+        loginPageButton.addClickListener(event -> {
+            UI.getCurrent().getPage().setLocation("Login");
+        });
     }
 
 
@@ -101,7 +105,7 @@ public class BrowseSites extends VerticalLayout{
             }
         });
 
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, browseSiteButton);
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, browseSiteButton,loginPageButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }

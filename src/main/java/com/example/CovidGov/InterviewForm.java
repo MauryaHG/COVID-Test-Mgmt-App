@@ -65,13 +65,13 @@ public class InterviewForm extends VerticalLayout {
     }
     public CovidTest makeRAT(){
         CovidTest covidTest = new CovidTest(EnumCovidTest.RAT);
-        Notification.show(EnumCovidTest.RAT + "assigned");
+        Notification.show(EnumCovidTest.RAT + " assigned");
         return covidTest;
     }
 
     public CovidTest makePCR(){
         CovidTest covidTest = new CovidTest(EnumCovidTest.PCR);
-        Notification.show(EnumCovidTest.PCR + "assigned");
+        Notification.show(EnumCovidTest.PCR + " assigned");
         return covidTest;
     }
 }

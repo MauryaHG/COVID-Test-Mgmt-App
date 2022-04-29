@@ -134,7 +134,7 @@ public class Login extends VerticalLayout {
             Notification.show("Logged in");
             assert currentUser != null;
             if (currentUser.isHealthcareWorker){
-                UI.getCurrent().getPage().setLocation("Status");
+                UI.getCurrent().getPage().setLocation("Interview");
             } else if(currentUser.isReceptionist){
                 UI.getCurrent().getPage().setLocation("Booking");
             } else if(currentUser.isCustomer){
