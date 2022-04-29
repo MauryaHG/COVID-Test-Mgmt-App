@@ -116,23 +116,33 @@ public class Login extends VerticalLayout {
 
         //check response's status code to see if login info is valid or not
         assert response != null;
+        User currentUser = null;
         if (response.statusCode() ==403) {
+            System.out.println("error");
             loginForm.setError(true);
         }else if (response.statusCode() == 200){
             try {
                     //creates new user object with JSON string
                     ObjectMapper om = new ObjectMapper();
-                    User currentUser = om.readValue(getUserData(username), User.class);
-                VaadinSession session = VaadinSession.getCurrent() ;   // Fetch current instance of `VaadinSession` to use its key-value collection of attributes.
-                session.setAttribute( User.class , currentUser ) ;
-                System.out.println(currentUser);
+                    currentUser = om.readValue(getUserData(username), User.class);
+                    VaadinSession session = VaadinSession.getCurrent() ;   // Fetch current instance of `VaadinSession` to use its key-value collection of attributes.
+                    session.setAttribute( User.class , currentUser ) ;
+                    System.out.println(currentUser);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             Notification.show("Logged in");
-            UI.getCurrent().getPage().setLocation("Booking");
+            assert currentUser != null;
+            if (currentUser.isHealthcareWorker){
+                UI.getCurrent().getPage().setLocation("Status");
+            } else if(currentUser.isReceptionist){
+                UI.getCurrent().getPage().setLocation("Booking");
+            } else if(currentUser.isCustomer){
+                UI.getCurrent().getPage().setLocation("Booking");
+            }
+            Notification.show("Logged in");
 
-        }else{
+        } else{
             Notification.show("error");
         }
 
@@ -183,6 +193,7 @@ public class Login extends VerticalLayout {
                  userNode = jsonNodes[i];
 
              }
+
          }
          return userNode.toString();
      }
