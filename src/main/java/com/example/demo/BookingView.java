@@ -1,17 +1,18 @@
 package com.example.demo;
 
-import com.example.demo.users.Booking;
-import com.example.demo.users.User;
+import com.example.demo.system.Booking;
+import com.example.demo.system.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -32,9 +33,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Route("Booking")
-
+/**
+ * creates booking page UI
+ */
 public class BookingView extends VerticalLayout {
 
+    //Vaadin UI elements
     TextField firstName = new TextField("First name");
     TextField lastName = new TextField("Last name");
     TextField username = new TextField("Username");
@@ -45,28 +49,34 @@ public class BookingView extends VerticalLayout {
     TextField siteId = new TextField("Site ID");
 
 
-
+    //retrieve api key from env variables
     Dotenv dotenv = Dotenv.load();
     private final String myApiKey = dotenv.get("API_KEY");
 
+    private String notes = "test book";
     // Provide the root URL for the web service. All web service request URLs start with this root URL.
     private static final String rootUrl = "https://fit3077.com/api/v1";
 
+    private final Button bookButton = new Button("Book");
 
-    private Button bookButton = new Button("Book");
-    private ArrayNode errorsLayout;
-
+    /**
+     * add UI elements to page
+     */
     public BookingView(){
 
         FormLayout formLayout = new FormLayout();
         VerticalLayout layout = new VerticalLayout();
 
+        CheckboxGroup<String> checkboxGroup = new CheckboxGroup<>();
+        checkboxGroup.setLabel("Select one");
+        checkboxGroup.setItems("On site testing", "Home Testing");
+
+        checkboxGroup.addValueChangeListener(event -> notes = event.getValue().toString());
 
         add(new H1("Booking form"));
         add(layout);
-
+        layout.add(checkboxGroup);
         layout.add(formLayout);
-
         formLayout.add(firstName, lastName);
         formLayout.add(username);
         formLayout.add(address);
@@ -83,6 +93,10 @@ public class BookingView extends VerticalLayout {
 
         buildForm();
     }
+
+    /**
+     * get user input and bind date to booking class object
+     */
     private Component buildForm(){
 
         Binder<Booking> binder = new Binder<>(Booking.class);
@@ -105,7 +119,7 @@ public class BookingView extends VerticalLayout {
         binder.readBean(new Booking());
 
         binder.addStatusChangeListener(status -> {
-                    boolean emptyFields = Stream.of("name", "quantity", "snack")
+                    boolean emptyFields = Stream.of("firstName", "lastName", "bookingDate")
                             .flatMap(prop -> binder.getBinding(prop).stream())
                             .anyMatch(binding -> binding.getField().isEmpty());
                     bookButton.setEnabled(!emptyFields);
@@ -118,27 +132,30 @@ public class BookingView extends VerticalLayout {
 
                 Booking newBooking = new Booking();
                 binder.writeBean(newBooking);
-                //addOrder(newBooking); (3)
                 addBooking(newBooking);
                 binder.readBean(new Booking());
                 System.out.println(newBooking);
             } catch (ValidationException e) {
-                errorsLayout.add(String.valueOf(new Html(e.getValidationErrors().stream()
+                add(String.valueOf(new Html(e.getValidationErrors().stream()
                         .map(res -> "<p>" + res.getErrorMessage() + "</p>")
                         .collect(Collectors.joining("\n")))));
             }
+
         });
         return null;
     }
-
+    /**
+     * sends POST request to webs service to add new booking to the database
+     * @param newBooking booking object created
+     */
     private void addBooking(Booking newBooking) {
         VaadinSession session = VaadinSession.getCurrent();   // Fetch current instance of `VaadinSession` to use its key-value collection of attributes.
         User currentUser = session.getAttribute(User.class);
 
         String userID = currentUser.id;
-        String testingSiteId = "7fbd25ee-5b64-4720-b1f6-4f6d4731260e";
+        String testingSiteId = newBooking.getTestingSiteId();
         LocalDate startTime = newBooking.getStartTime();
-        String notes = "test book";
+
 
 
 
@@ -150,8 +167,9 @@ public class BookingView extends VerticalLayout {
         booking.put("testingSiteId", testingSiteId);
         booking.put("startTime", startTime.toString());
         booking.put("notes", notes);
+        //create JSON object for additional data
         ObjectNode additionalInfo = mapper.createObjectNode();
-        additionalInfo.put("test","test");
+        additionalInfo.put("QRcode","Dummy QR");
         booking.set("additionalInfo", additionalInfo);
 
         String jsonString = null;
@@ -161,12 +179,13 @@ public class BookingView extends VerticalLayout {
             e.printStackTrace();
         }
 
+        //POST request
         String userBookingUrl = rootUrl + "/booking";
         HttpClient client = HttpClient.newHttpClient();
         HttpResponse<String> response = null;
-        HttpRequest request = HttpRequest.newBuilder(URI.create(userBookingUrl + "?jwt=true")) // Return a JWT so we can use it in Part 5 later.
+        HttpRequest request = HttpRequest.newBuilder(URI.create(userBookingUrl))
                 .setHeader("Authorization", myApiKey)
-                .header("Content-Type","application/json") // This header needs to be set when sending a JSON request body.
+                .header("Content-Type","application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonString))
                 .build();
 
@@ -177,12 +196,7 @@ public class BookingView extends VerticalLayout {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        System.out.println("Part 4\n----");
-        System.out.println(request.uri());
-        System.out.println("Response code: " + response.statusCode());
-        System.out.println("Full JSON response: " + response.body()); // The JWT token that has just been issued will be returned since we set ?jwt=true.
-        System.out.println("----\n\n");
+        Notification.show(("Booking complete. PIN/QR sent to phone"));
     }
 
 }
