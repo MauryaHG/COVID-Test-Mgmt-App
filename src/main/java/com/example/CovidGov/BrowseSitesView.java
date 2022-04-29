@@ -1,7 +1,7 @@
-package com.example.demo;
+package com.example.CovidGov;
 
-import com.example.demo.TestingSite.TestSiteTable;
-import com.example.demo.TestingSite.TestingSite;
+import com.example.CovidGov.TestingSite.TestSiteTable;
+import com.example.CovidGov.TestingSite.TestingSite;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;

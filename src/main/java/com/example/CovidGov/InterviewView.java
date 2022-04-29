@@ -1,7 +1,7 @@
-package com.example.demo;
+package com.example.CovidGov;
 
 
-import com.example.demo.enums.EnumCovidTest;
+import com.example.CovidGov.enums.EnumCovidTest;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;

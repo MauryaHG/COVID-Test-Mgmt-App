@@ -1,7 +1,7 @@
-package com.example.demo;
+package com.example.CovidGov;
 
 
-import com.example.demo.system.User;
+import com.example.CovidGov.system.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -22,7 +22,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 @Route("Login")
-public class LoginView extends VerticalLayout {
+public class Login extends VerticalLayout {
 
     private final LoginOverlay loginOverlay = new LoginOverlay();
     private final LoginForm loginForm = new LoginForm();
@@ -38,7 +38,7 @@ public class LoginView extends VerticalLayout {
     /**
      * creates the login form UI
      */
-    public LoginView() throws Exception {
+    public Login() throws Exception {
 
         // create form elements
         setSizeFull();
@@ -121,7 +121,7 @@ public class LoginView extends VerticalLayout {
             loginForm.setError(true);
         }else if (response.statusCode() == 200){
             try {
-                    //
+                    //creates new user object with JSON string
                     ObjectMapper om = new ObjectMapper();
                     User currentUser = om.readValue(getUserData(username), User.class);
                 VaadinSession session = VaadinSession.getCurrent() ;   // Fetch current instance of `VaadinSession` to use its key-value collection of attributes.

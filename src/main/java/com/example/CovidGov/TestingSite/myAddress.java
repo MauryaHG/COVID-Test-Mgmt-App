@@ -1,4 +1,4 @@
-package com.example.demo.TestingSite;
+package com.example.CovidGov.TestingSite;
 
 public class myAddress{
     public void setLatitude(long latitude) {

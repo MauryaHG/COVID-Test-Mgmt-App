@@ -1,7 +1,7 @@
-package com.example.demo;
+package com.example.CovidGov;
 
-import com.example.demo.system.Booking;
-import com.example.demo.system.User;
+import com.example.CovidGov.system.Booking;
+import com.example.CovidGov.system.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 /**
  * creates booking page UI
  */
-public class BookingView extends VerticalLayout {
+public class BookingForm extends VerticalLayout {
 
     //Vaadin UI elements
     TextField firstName = new TextField("First name");
@@ -62,7 +62,7 @@ public class BookingView extends VerticalLayout {
     /**
      * add UI elements to page
      */
-    public BookingView(){
+    public BookingForm(){
 
         FormLayout formLayout = new FormLayout();
         VerticalLayout layout = new VerticalLayout();
@@ -86,8 +86,6 @@ public class BookingView extends VerticalLayout {
         TextField taskField = new TextField();
 
         add(bookButton);
-        bookButton.addClickListener(click -> {
-        });
         layout.setSizeFull();
         layout.setAlignItems(Alignment.CENTER);
 

@@ -1,4 +1,4 @@
-package com.example.demo.enums;
+package com.example.CovidGov.enums;
 
 public enum EnumCovidTest {
     PCR,

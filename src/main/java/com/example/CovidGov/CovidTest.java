@@ -1,6 +1,6 @@
-package com.example.demo;
+package com.example.CovidGov;
 
-import com.example.demo.enums.EnumCovidTest;
+import com.example.CovidGov.enums.EnumCovidTest;
 
 public class CovidTest {
     private EnumCovidTest testType;

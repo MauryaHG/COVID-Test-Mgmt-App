@@ -1,4 +1,4 @@
-package com.example.demo.system;
+package com.example.CovidGov.system;
 
 import java.time.LocalDate;
 
