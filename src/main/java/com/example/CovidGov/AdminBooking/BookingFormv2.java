@@ -1,31 +1,30 @@
 package com.example.CovidGov.AdminBooking;
 
 
+import com.example.CovidGov.apiTools;
 import com.vaadin.flow.component.ComponentEvent;
-import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.shared.Registration;
 
 import java.util.List;
 
 public class BookingFormv2 extends FormLayout {
 
     private Booking currentBooking;
+    private apiTools api = new apiTools();
+    TextField customerId = new TextField("Customer Id");
 
-    TextField firstName = new TextField("First name");
-    TextField lastName = new TextField("Last name");
-    DatePicker date = new DatePicker("Date");
-    TextField site = new TextField("Testing-Site");
+    TextField testingSiteId = new TextField("Testing SiteId");
+    TextField startTime = new TextField("Date");
+    TextField notes = new TextField("Notes");
     ComboBox<Booking> bookings = new ComboBox<>("testing Site");
     Binder<Booking> binder = new BeanValidationBinder<>(Booking.class);
 
@@ -35,15 +34,25 @@ public class BookingFormv2 extends FormLayout {
 
     public BookingFormv2(List<Booking> booking) {
         addClassName("booking-form");
-        //binder.bindInstanceFields(this);
+        customerId.setReadOnly(true);
+        binder.bindInstanceFields(this);
 
         bookings.setItems(booking);
         bookings.setItemLabelGenerator(Booking::getId);
-        add(firstName,
-                lastName,
-                date,
-                site,
+        add(customerId,
+                testingSiteId,
+                startTime,
+                notes,
                 createButtonsLayout());
+    }
+
+    public void setBooking(Booking booking) {
+        this.currentBooking = booking;
+        System.out.println(booking.getTestingSite());
+        customerId.setValue(booking.getCustomer().getId());
+        testingSiteId.setValue("7fbd25ee-5b64-4720-b1f6-4f6d4731260e");
+        startTime.setValue(booking.getStartTime());
+        notes.setValue(booking.getNotes());
     }
 
     private HorizontalLayout createButtonsLayout() {
@@ -55,8 +64,8 @@ public class BookingFormv2 extends FormLayout {
         close.addClickShortcut(Key.ESCAPE);
 
         save.addClickListener(event -> validateAndSave());
-        delete.addClickListener(event -> fireEvent(new DeleteEvent(this, currentBooking)));
-        close.addClickListener(event -> fireEvent(new CloseEvent(this)));
+        delete.addClickListener(event -> fireEvent(deleteEvent(currentBooking)));
+        close.addClickListener(event -> fireEvent(CloseEvent(this)));
 
 
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
@@ -64,55 +73,23 @@ public class BookingFormv2 extends FormLayout {
         return new HorizontalLayout(save, delete, close);
     }
 
-    public void setBooking(Booking booking) {
-        this.currentBooking = booking;
-        binder.readBean(booking);
+    private ComponentEvent<?> CloseEvent(BookingFormv2 bookingFormv2) {
+        return null;
     }
+
 
     private void validateAndSave() {
         try {
             binder.writeBean(currentBooking);
-            fireEvent(new SaveEvent(this, currentBooking));
         } catch (ValidationException e) {
             e.printStackTrace();
         }
     }
 
-    // Events
-    public static abstract class ContactFormEvent extends ComponentEvent<BookingFormv2> {
-        private Booking booking;
-
-        protected ContactFormEvent(BookingFormv2 source, Booking booking) {
-            super(source, false);
-            this.booking = booking;
-        }
-
-        public Booking getContact() {
-            return booking;
-        }
+    public ComponentEvent<?> deleteEvent(Booking currentBooking) {
+        apiTools.deleteBooking(currentBooking);
+        return null;
     }
 
-    public static class SaveEvent extends ContactFormEvent {
-        SaveEvent(BookingFormv2 source, Booking booking) {
-            super(source, booking);
-        }
-    }
 
-    public static class DeleteEvent extends ContactFormEvent {
-        DeleteEvent(BookingFormv2 source, Booking booking) {
-            super(source, booking);
-        }
-
-    }
-
-    public static class CloseEvent extends ContactFormEvent {
-        CloseEvent(BookingFormv2 source) {
-            super(source, null);
-        }
-    }
-
-    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
-                                                                  ComponentEventListener<T> listener) {
-        return getEventBus().addListener(eventType, listener);
-    }
 }

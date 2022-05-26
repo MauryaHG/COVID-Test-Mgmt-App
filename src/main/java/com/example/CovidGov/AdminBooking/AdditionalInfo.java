@@ -1,16 +1,18 @@
 package com.example.CovidGov.AdminBooking;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(value = { "QRcode" ,"test","qrcode"})
 public class AdditionalInfo {
 
-
-    public com.example.CovidGov.AdminBooking.QRcode getQRcode() {
-        return QRcode;
+    public String getqrcode() {
+        return qrcode;
     }
 
-    public void setQRcode(com.example.CovidGov.AdminBooking.QRcode QRcode) {
-        this.QRcode = QRcode;
+    public void setqrcode(String qrcode) {
+        this.qrcode = qrcode;
     }
 
-    private QRcode QRcode;
+    private String qrcode;
 
 }

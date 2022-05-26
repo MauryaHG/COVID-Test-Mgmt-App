@@ -1,5 +1,8 @@
 package com.example.CovidGov.TestingSite;
 
+import com.example.CovidGov.AdminBooking.Booking;
+
+import java.util.List;
 public class TestingSite {
     /*
     public TestingSite(String id, String name, String description, String websiteUrl, String phoneNumber, myAddress address, String createdAt, String updatedAt, AdditionalInfo additionalInfo) {
@@ -22,6 +25,7 @@ public class TestingSite {
     private siteAddress address;
     private String createdAt;
     private String updatedAt;
+    private List<Booking> bookings = null;
     private AdditionalInfo additionalInfo;
 
     public void setId(String id) {
@@ -60,6 +64,8 @@ public class TestingSite {
         this.additionalInfo = additionalInfo;
     }
 
+    public void setBookings(List<Booking> bookings) { this.bookings = bookings; }
+
     public String getId() {
         return id;
     }
@@ -95,5 +101,9 @@ public class TestingSite {
     public AdditionalInfo getAdditionalInfo() {
         return additionalInfo;
     }
+
+    public List<Booking> getBookings() { return bookings; }
+
+
 
 }
