@@ -2,7 +2,11 @@ package com.example.CovidGov;
 
 import com.example.CovidGov.AdminBooking.Booking;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
@@ -26,11 +30,16 @@ public class ChangeBooking extends VerticalLayout {
     private List<com.example.CovidGov.AdminBooking.Booking> bookingList = new ArrayList<Booking>();
 
     Grid<com.example.CovidGov.AdminBooking.Booking> grid = new Grid<>(Booking.class);
-    TextField filterText = new TextField();
+    private FormLayout formLayout = new FormLayout();
+    TextField testingSiteId = new TextField("Testing SiteId");
+    TextField startTime = new TextField("Date");
 
     VaadinSession session = VaadinSession.getCurrent();   // Fetch current instance of `VaadinSession` to use its key-value collection of attributes.
     User currentUser = session.getAttribute(User.class);
     String UserId = currentUser.getId();
+
+    private Button save = new Button("Save");
+    private Booking currentBooking;
 
 
     public ChangeBooking() throws Exception{
@@ -66,6 +75,12 @@ public class ChangeBooking extends VerticalLayout {
         configureGrid();
         add(grid);
         grid.setItems(bookingList);
+        grid.asSingleSelect().addValueChangeListener(event ->
+                editBooking(event.getValue()));
+        add(formLayout);
+        formLayout.add(testingSiteId,
+                startTime,
+                createButtonsLayout());
     }
 
     private void configureGrid() {
@@ -74,6 +89,56 @@ public class ChangeBooking extends VerticalLayout {
         grid.setColumns("id","testingSite", "startTime", "status");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
+    }
+
+    public void editBooking(Booking booking) {
+        System.out.println("booking");
+        System.out.println(booking.getTestingSite());
+        if (booking == null) {
+            closeEditor();
+        } else {
+            currentBooking = booking;
+            testingSiteId.setValue("7fbd25ee-5b64-4720-b1f6-4f6d4731260e");
+            startTime.setValue(booking.getStartTime());
+            formLayout.setVisible(true);
+            addClassName("editing");
+        }
+    }
+
+    private void closeEditor() {
+        formLayout.setVisible(false);
+        removeClassName("editing");
+    }
+
+
+    private HorizontalLayout createButtonsLayout() {
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        save.addClickListener(event -> saveBooking(currentBooking, testingSiteId.getValue(), startTime.getValue()));
+
+        return new HorizontalLayout(save);
+    }
+
+    public void saveBooking(Booking booking, String testingSiteId, String startTime) {
+        String jsonString = "{" +
+                "\"testingSiteId\": \"" + testingSiteId + "\"," +
+                "\"startTime\": \"" + startTime + "\"," +
+                "}";
+        System.out.println(jsonString);
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest
+                .newBuilder(URI.create("https://fit3077.com/api/v2/booking/" + booking.getId()))
+                .header("accept", "application/json")
+                .header("Authorization", myApiKey)
+                .method("PATCH", HttpRequest.BodyPublishers.ofString(jsonString))
+                .header("Content-Type", "application/json")
+                .build();
+        try {
+            HttpResponse response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
 
