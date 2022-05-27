@@ -121,10 +121,7 @@ public class ChangeBooking extends VerticalLayout {
         String jsonString = "{" +
                 "\"customerId\": \"" + customerId + "\"," +
                 "\"testingSiteId\": \"" + testingSiteId + "\"," +
-                "\"startTime\": \"" + startTime + "\"," +
-                "\"status\": \"" + status + "\"," +
-                "\"notes\": \"" + notes + "\"," +
-                "\"additionalInfo\": \"" + additionalInfo + "\"" +
+                "\"startTime\": \"" + startTime + "\"" +
                 "}";
         System.out.println(jsonString);
         HttpClient client = HttpClient.newHttpClient();
