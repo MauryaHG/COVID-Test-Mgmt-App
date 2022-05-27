@@ -140,7 +140,6 @@ public class Login extends VerticalLayout {
             } else if(currentUser.isCustomer){
                 UI.getCurrent().getPage().setLocation("Booking");
             }
-            Notification.show("Logged in");
             VaadinSession session = VaadinSession.getCurrent() ;   // Fetch current instance of `VaadinSession` to use its key-value collection of attributes.
             session.setAttribute( User.class , currentUser ) ;
 

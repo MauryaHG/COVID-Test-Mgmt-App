@@ -1,11 +1,12 @@
 package com.example.CovidGov;
 
 import com.example.CovidGov.AdminBooking.Booking;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -18,16 +19,13 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 @Route(value = " ChangeBooking")
 public class ChangeBooking extends VerticalLayout {
     Dotenv dotenv = Dotenv.load();
     private final String myApiKey = dotenv.get("API_KEY");
 
-    private static final String rootUrl = "https://fit3077.com/api/v2";
-    private List<com.example.CovidGov.AdminBooking.Booking> bookingList = new ArrayList<Booking>();
+    bookingsViewModel api = new bookingsViewModel();
 
     Grid<com.example.CovidGov.AdminBooking.Booking> grid = new Grid<>(Booking.class);
     private FormLayout formLayout = new FormLayout();
@@ -43,42 +41,19 @@ public class ChangeBooking extends VerticalLayout {
 
 
     public ChangeBooking() throws Exception{
-        String UserIdUrl = rootUrl + "/user/"+ UserId;
-
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest
-                .newBuilder(URI.create(UserIdUrl + "?fields=bookings"))
-                .setHeader("Authorization", myApiKey)
-                .GET()
-                .build();
-
-        HttpResponse<String> response = null;
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println(response.body());
-
-        User jsonNode = new ObjectMapper().readValue(response.body(), User.class);
-        bookingList = jsonNode.getBookings();
-
-        System.out.println(currentUser);
-        System.out.println(currentUser.getId());
-        System.out.println(jsonNode);
-        System.out.println(bookingList);
         addClassName("list-view");
         setSizeFull();
         configureGrid();
         add(grid);
-        grid.setItems(bookingList);
-        grid.asSingleSelect().addValueChangeListener(event ->
-                editBooking(event.getValue()));
+
         add(formLayout);
         formLayout.add(testingSiteId,
                 startTime,
                 createButtonsLayout());
+        updateList();
+
+        grid.asSingleSelect().addValueChangeListener(event ->
+                editBooking(event.getValue()));
     }
 
     private void configureGrid() {
@@ -87,6 +62,14 @@ public class ChangeBooking extends VerticalLayout {
         grid.setColumns("id","testingSite", "startTime", "status");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
+    }
+
+    public void updateList()  {
+        try{
+            grid.setItems(api.getBookingsWithUserId(UserId));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     public void editBooking(Booking booking) {
@@ -111,13 +94,12 @@ public class ChangeBooking extends VerticalLayout {
 
     private HorizontalLayout createButtonsLayout() {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        ObjectMapper emptyarray = new ObjectMapper();
-        save.addClickListener(event -> saveBooking(currentBooking, UserId, testingSiteId.getValue(), startTime.getValue(), currentBooking.getStatus(), "", emptyarray));
+        save.addClickListener(event -> saveBooking(currentBooking, UserId, testingSiteId.getValue(), startTime.getValue()));
 
         return new HorizontalLayout(save);
     }
 
-    public void saveBooking(Booking booking, String customerId, String testingSiteId, String startTime, String status, String notes, ObjectMapper additionalInfo){
+    public void saveBooking(Booking booking, String customerId, String testingSiteId, String startTime){
         String jsonString = "{" +
                 "\"customerId\": \"" + customerId + "\"," +
                 "\"testingSiteId\": \"" + testingSiteId + "\"," +
@@ -138,6 +120,9 @@ public class ChangeBooking extends VerticalLayout {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+
+        updateList();
+        Notification.show(("Booking updated."));
     }
 }
 

@@ -97,4 +97,29 @@ public class bookingsViewModel {
         }
         return site.getBookings();
     }
+
+    public List<Booking> getBookingsWithUserId(String UserId) throws JsonProcessingException {
+        String UserIdUrl = rootUrl + "/user/"+ UserId;
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest
+                .newBuilder(URI.create(UserIdUrl + "?fields=bookings"))
+                .setHeader("Authorization", myApiKey)
+                .GET()
+                .build();
+
+        HttpResponse<String> response = null;
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(response.body());
+
+        User jsonNode = new ObjectMapper().readValue(response.body(), User.class);
+        List<Booking> bookingList = jsonNode.getBookings();
+
+        return bookingList;
+    }
 }
