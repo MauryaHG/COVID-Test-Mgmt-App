@@ -25,7 +25,7 @@ public class TestingSite {
     private siteAddress address;
     private String createdAt;
     private String updatedAt;
-    private List<Booking> bookings = null;
+    private List<Booking> bookings;
     private AdditionalInfo additionalInfo;
 
     public void setId(String id) {

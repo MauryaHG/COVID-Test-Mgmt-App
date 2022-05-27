@@ -35,7 +35,7 @@ public class Status extends VerticalLayout {
 
         VaadinSession session = VaadinSession.getCurrent();
         User currentUser = session.getAttribute(User.class);
-        String usersUrl = "https://fit3077.com/api/v1/booking/";
+        String usersUrl = "https://fit3077.com/api/v2/booking/";
         Dotenv dotenv = Dotenv.load();
         String myApiKey = dotenv.get("API_KEY");
         HttpClient client = HttpClient.newHttpClient();

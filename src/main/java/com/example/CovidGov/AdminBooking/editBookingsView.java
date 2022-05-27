@@ -2,7 +2,7 @@ package com.example.CovidGov.AdminBooking;
 
 
 import com.example.CovidGov.User;
-import com.example.CovidGov.apiTools;
+import com.example.CovidGov.bookingsViewModel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -16,7 +16,7 @@ import java.util.List;
 public class editBookingsView extends FormLayout {
 
     private Booking currentBooking;
-    private final apiTools api = new apiTools();
+    private final bookingsViewModel api = new bookingsViewModel();
     private final bookingsView bookingView;
 
     VaadinSession session = VaadinSession.getCurrent();   // Fetch current instance of VaadinSession to use its key-value collection of attributes.
@@ -65,6 +65,7 @@ public class editBookingsView extends FormLayout {
 
     private void validateAndSave(Booking currentBooking, String customerId, String testingSiteId, String startTime, String notes) {
         api.saveBooking(currentBooking, customerId, testingSiteId, startTime, notes);
+        bookingView.updateList();
         Notification.show(("Booking updated."));
     }
 

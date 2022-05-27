@@ -1,7 +1,7 @@
 package com.example.CovidGov.AdminBooking;
 
 import com.example.CovidGov.User;
-import com.example.CovidGov.apiTools;
+import com.example.CovidGov.bookingsViewModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -18,7 +18,7 @@ public class bookingsView extends VerticalLayout {
     Grid<Booking> grid = new Grid<>(Booking.class);
     TextField filterText = new TextField();
     editBookingsView form;
-    apiTools api = new apiTools();
+    bookingsViewModel api = new bookingsViewModel();
 
     VaadinSession session = VaadinSession.getCurrent();   // Fetch current instance of VaadinSession to use its key-value collection of attributes.
     User currentUser = session.getAttribute(User.class);

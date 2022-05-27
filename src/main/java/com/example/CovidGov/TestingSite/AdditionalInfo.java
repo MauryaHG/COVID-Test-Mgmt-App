@@ -1,6 +1,14 @@
 package com.example.CovidGov.TestingSite;
 
 public class AdditionalInfo{
+
+    private boolean providesOnsiteTesting;
+    private boolean providesOnsiteBooking;
+    private String facilityType;
+    private String openingTimes;
+    private String estimatedWaitTime;
+
+
     public void setProvidesOnsiteTesting(boolean providesOnsiteTesting) {
         this.providesOnsiteTesting = providesOnsiteTesting;
     }
@@ -41,9 +49,6 @@ public class AdditionalInfo{
         return estimatedWaitTime;
     }
 
-    private boolean providesOnsiteTesting;
-    private boolean providesOnsiteBooking;
-    private String facilityType;
-    private String openingTimes;
-    private String estimatedWaitTime;
+
+
 }
