@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 /**
  * creates booking page UI
  */
-public class BookingForm extends VerticalLayout {
+public class createBookingView extends VerticalLayout {
 
     //Vaadin UI elements
     TextField firstName = new TextField("First name");
@@ -60,7 +60,7 @@ public class BookingForm extends VerticalLayout {
     /**
      * add UI elements to page
      */
-    public BookingForm(){
+    public createBookingView(){
 
 
         //Create page UI

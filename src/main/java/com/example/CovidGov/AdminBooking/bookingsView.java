@@ -15,9 +15,10 @@ import com.vaadin.flow.router.Route;
 @Route(value="book")
 @PageTitle("Bookings")
 public class bookingsView extends VerticalLayout {
+
     Grid<Booking> grid = new Grid<>(Booking.class);
     TextField filterText = new TextField();
-    BookingFormv2 form;
+    editBoookingView form;
     apiTools api = new apiTools();
 
     public bookingsView() throws JsonProcessingException {
@@ -27,9 +28,20 @@ public class bookingsView extends VerticalLayout {
 
         add(grid);
 
-        form = new BookingFormv2(api.getBookings("7fbd25ee-5b64-4720-b1f6-4f6d4731260e"));
+        form = new editBoookingView(this, api.getBookings("7fbd25ee-5b64-4720-b1f6-4f6d4731260e"));
         form.setWidth("25em");
         add(form);
+        updateList();
+        grid.asSingleSelect().addValueChangeListener(event ->
+                editBooking(event.getValue()));
+    }
+
+    public void updateList()  {
+        try{
+            grid.setItems(api.getBookings("7fbd25ee-5b64-4720-b1f6-4f6d4731260e"));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
     }
 
     private void configureGrid() {
@@ -47,7 +59,7 @@ public class bookingsView extends VerticalLayout {
         filterText.setPlaceholder("Filter by name...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
-        filterText.addValueChangeListener(e -> updateList());
+        filterText.addValueChangeListener(e -> {updateList();});
 
         Button addContactButton = new Button("Add contact");
         addContactButton.addClickListener(click -> addContact());
@@ -57,23 +69,14 @@ public class bookingsView extends VerticalLayout {
         return toolbar;
     }
 
-    private void saveContact(BookingFormv2.SaveEvent event) {
-        //service.saveContact(event.getContact());
-        updateList();
-        closeEditor();
-    }
 
-    private void deleteContact(BookingFormv2.DeleteEvent event) {
-        //service.deleteContact(event.getContact());
-        updateList();
-        closeEditor();
-    }
-
-    public void editContact(Booking contact) {
-        if (contact == null) {
+    public void editBooking(Booking booking) {
+        System.out.println("booking");
+        System.out.println(booking.getTestingSite());
+        if (booking == null) {
             closeEditor();
         } else {
-            //form.setContact(contact);
+            form.setBooking(booking);
             form.setVisible(true);
             addClassName("editing");
         }
@@ -81,7 +84,7 @@ public class bookingsView extends VerticalLayout {
 
     void addContact() {
         grid.asSingleSelect().clear();
-        editContact(new Booking());
+        editBooking(new Booking());
     }
 
     private void closeEditor() {
@@ -89,10 +92,5 @@ public class bookingsView extends VerticalLayout {
         form.setVisible(false);
         removeClassName("editing");
     }
-
-    private void updateList() {
-        //grid.setItems(service.findAllContacts(filterText.getValue()));
-    }
-
 
 }
