@@ -1,6 +1,7 @@
 package com.example.CovidGov;
 
 import com.example.CovidGov.AdminBooking.BookingModel;
+import com.example.CovidGov.AdminBooking.BookingsViewModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;

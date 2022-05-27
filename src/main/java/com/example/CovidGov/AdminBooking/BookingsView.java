@@ -1,7 +1,6 @@
 package com.example.CovidGov.AdminBooking;
 
 import com.example.CovidGov.User;
-import com.example.CovidGov.BookingsViewModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;

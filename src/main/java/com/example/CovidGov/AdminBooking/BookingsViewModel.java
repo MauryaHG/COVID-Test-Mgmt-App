@@ -1,7 +1,7 @@
-package com.example.CovidGov;
+package com.example.CovidGov.AdminBooking;
 
-import com.example.CovidGov.AdminBooking.BookingModel;
 import com.example.CovidGov.TestingSite.TestingSite;
+import com.example.CovidGov.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.server.VaadinSession;

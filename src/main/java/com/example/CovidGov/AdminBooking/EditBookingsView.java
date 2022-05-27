@@ -2,7 +2,6 @@ package com.example.CovidGov.AdminBooking;
 
 
 import com.example.CovidGov.User;
-import com.example.CovidGov.BookingsViewModel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
