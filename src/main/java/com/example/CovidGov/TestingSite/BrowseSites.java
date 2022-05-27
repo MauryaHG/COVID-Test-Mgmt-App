@@ -32,7 +32,7 @@ public class BrowseSites extends VerticalLayout{
     private final String myApiKey = dotenv.get("API_KEY");
     private ObjectNode[] jsonNodes;
     // Provide the root URL for the web service. All web service request URLs start with this root URL.
-    private static final String rootUrl = "https://fit3077.com/api/v1";
+    private static final String rootUrl = "https://fit3077.com/api/v2";
 
     public BrowseSites() throws Exception{
         String testingSiteUrl = rootUrl + "/testing-site";

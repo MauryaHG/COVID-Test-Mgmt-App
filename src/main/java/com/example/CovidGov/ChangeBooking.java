@@ -26,7 +26,7 @@ public class ChangeBooking extends VerticalLayout {
     Dotenv dotenv = Dotenv.load();
     private final String myApiKey = dotenv.get("API_KEY");
 
-    private static final String rootUrl = "https://fit3077.com/api/v1";
+    private static final String rootUrl = "https://fit3077.com/api/v2";
     private List<com.example.CovidGov.AdminBooking.Booking> bookingList = new ArrayList<Booking>();
 
     Grid<com.example.CovidGov.AdminBooking.Booking> grid = new Grid<>(Booking.class);
@@ -63,8 +63,6 @@ public class ChangeBooking extends VerticalLayout {
 
         User jsonNode = new ObjectMapper().readValue(response.body(), User.class);
         bookingList = jsonNode.getBookings();
-
-
 
         System.out.println(currentUser);
         System.out.println(currentUser.getId());
@@ -113,16 +111,20 @@ public class ChangeBooking extends VerticalLayout {
 
     private HorizontalLayout createButtonsLayout() {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-        save.addClickListener(event -> saveBooking(currentBooking, testingSiteId.getValue(), startTime.getValue()));
+        ObjectMapper emptyarray = new ObjectMapper();
+        save.addClickListener(event -> saveBooking(currentBooking, UserId, testingSiteId.getValue(), startTime.getValue(), currentBooking.getStatus(), "", emptyarray));
 
         return new HorizontalLayout(save);
     }
 
-    public void saveBooking(Booking booking, String testingSiteId, String startTime) {
+    public void saveBooking(Booking booking, String customerId, String testingSiteId, String startTime, String status, String notes, ObjectMapper additionalInfo){
         String jsonString = "{" +
+                "\"customerId\": \"" + customerId + "\"," +
                 "\"testingSiteId\": \"" + testingSiteId + "\"," +
                 "\"startTime\": \"" + startTime + "\"," +
+                "\"status\": \"" + status + "\"," +
+                "\"notes\": \"" + notes + "\"," +
+                "\"additionalInfo\": \"" + additionalInfo + "\"" +
                 "}";
         System.out.println(jsonString);
         HttpClient client = HttpClient.newHttpClient();
