@@ -10,7 +10,7 @@ import com.vaadin.flow.component.textfield.TextField;
 
 import java.util.List;
 
-public class editBoookingView extends FormLayout {
+public class editBookingsView extends FormLayout {
 
     private Booking currentBooking;
     private final apiTools api = new apiTools();
@@ -25,7 +25,7 @@ public class editBoookingView extends FormLayout {
     Button delete = new Button("Delete");
 
 
-    public editBoookingView(bookingsView bookingsView, List<Booking> booking) {
+    public editBookingsView(bookingsView bookingsView, List<Booking> booking) {
         bookingView = bookingsView;
 
         addClassName("booking-form");
@@ -51,21 +51,25 @@ public class editBoookingView extends FormLayout {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-        save.addClickListener(event -> validateAndSave(currentBooking));
+        save.addClickListener(event -> validateAndSave(currentBooking, customerId.getValue(), testingSiteId.getValue(), startTime.getValue(), notes.getValue()));
         delete.addClickListener(event -> deleteEvent(currentBooking));
 
         return new HorizontalLayout(save, delete);
     }
 
+    private void validateAndSave(Booking currentBooking, String customerId, String testingSiteId, String startTime, String notes) {
+        api.saveBooking(currentBooking, customerId, testingSiteId, startTime, notes);
+    }
+
     private void validateAndSave(Booking currentBooking) {
         System.out.println("currentBooking.getTestingSite()");
-        System.out.println(currentBooking.getTestingSite().getId());
-        apiTools.saveBooking(currentBooking);
+        //System.out.println(currentBooking.getTestingSite().getId());
+
         //binder.writeBean(this.currentBooking);
     }
 
     public void deleteEvent(Booking currentBooking) {
-        apiTools.deleteBooking(currentBooking);
+        api.deleteBooking(currentBooking);
         bookingView.updateList();
     }
 
