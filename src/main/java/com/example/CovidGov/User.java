@@ -123,6 +123,16 @@ public class User {
     public AdditionalInfo additionalInfo;
 
     public class AdditionalInfo{
+        private String workingSite;
+
+        public String getWorkingSite() {
+            return workingSite;
+        }
+
+        public void setWorkingSite(String workingSite) {
+            this.workingSite = workingSite;
+        }
     }
+
 
 }
