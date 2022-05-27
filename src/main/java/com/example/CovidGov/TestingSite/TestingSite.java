@@ -1,6 +1,6 @@
 package com.example.CovidGov.TestingSite;
 
-import com.example.CovidGov.AdminBooking.Booking;
+import com.example.CovidGov.AdminBooking.BookingModel;
 
 import java.util.List;
 public class TestingSite {
@@ -22,10 +22,10 @@ public class TestingSite {
     private String description;
     private String websiteUrl;
     private String phoneNumber;
-    private siteAddress address;
+    private SiteAddress address;
     private String createdAt;
     private String updatedAt;
-    private List<Booking> bookings;
+    private List<BookingModel> bookings;
     private AdditionalInfo additionalInfo;
 
     public void setId(String id) {
@@ -48,7 +48,7 @@ public class TestingSite {
         this.phoneNumber = phoneNumber;
     }
 
-    public void setAddress(siteAddress address) {
+    public void setAddress(SiteAddress address) {
         this.address = address;
     }
 
@@ -64,7 +64,7 @@ public class TestingSite {
         this.additionalInfo = additionalInfo;
     }
 
-    public void setBookings(List<Booking> bookings) { this.bookings = bookings; }
+    public void setBookings(List<BookingModel> bookings) { this.bookings = bookings; }
 
     public String getId() {
         return id;
@@ -86,7 +86,7 @@ public class TestingSite {
         return phoneNumber;
     }
 
-    public siteAddress getAddress() {
+    public SiteAddress getAddress() {
         return address;
     }
 
@@ -102,7 +102,7 @@ public class TestingSite {
         return additionalInfo;
     }
 
-    public List<Booking> getBookings() { return bookings; }
+    public List<BookingModel> getBookings() { return bookings; }
 
 
 

@@ -1,11 +1,10 @@
 package com.example.CovidGov.AdminBooking;
 
 import com.example.CovidGov.User;
-import com.example.CovidGov.bookingsViewModel;
+import com.example.CovidGov.BookingsViewModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
@@ -13,17 +12,16 @@ import com.vaadin.flow.server.VaadinSession;
 
 @Route(value="book")
 @PageTitle("Bookings")
-public class bookingsView extends VerticalLayout {
+public class BookingsView extends VerticalLayout {
 
-    Grid<Booking> grid = new Grid<>(Booking.class);
-    TextField filterText = new TextField();
-    editBookingsView form;
-    bookingsViewModel api = new bookingsViewModel();
+    Grid<BookingModel> grid = new Grid<>(BookingModel.class);
+    EditBookingsView form;
+    BookingsViewModel api = new BookingsViewModel();
 
     VaadinSession session = VaadinSession.getCurrent();   // Fetch current instance of VaadinSession to use its key-value collection of attributes.
     User currentUser = session.getAttribute(User.class);
     String siteID = currentUser.getAdditionalInfo().getWorkingSite();
-    public bookingsView() throws JsonProcessingException {
+    public BookingsView() throws JsonProcessingException {
 
         System.out.println(currentUser);
         addClassName("list-view");
@@ -32,7 +30,7 @@ public class bookingsView extends VerticalLayout {
 
         add(grid);
 
-        form = new editBookingsView(this, api.getBookings(siteID));
+        form = new EditBookingsView(this, api.getBookings(siteID));
         form.setWidth("25em");
         add(form);
         updateList();
@@ -52,13 +50,14 @@ public class bookingsView extends VerticalLayout {
         grid.addClassNames("booking-grid");
         grid.setSizeFull();
         grid.setColumns("id", "status");
-        grid.addColumn(booking -> booking.getTestingSite().getId()).setHeader("Testing site");
+        grid.addColumn(booking -> booking.getTestingSite().getName()).setHeader("Testing site name");
+        grid.addColumn(booking -> booking.getTestingSite().getId()).setHeader("Testing site ID");
         grid.addColumn(booking -> booking.getCustomer().getGivenName()).setHeader("First Name");
         grid.addColumn(booking -> booking.getCustomer().getFamilyName()).setHeader("Second Name");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
 
-    public void editBooking(Booking booking) {
+    public void editBooking(BookingModel booking) {
         if (booking == null) {
             closeEditor();
         } else {

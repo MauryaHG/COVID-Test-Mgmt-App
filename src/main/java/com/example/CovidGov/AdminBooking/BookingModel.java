@@ -6,7 +6,7 @@ import com.example.CovidGov.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(value = { "QRcode" })
-public class Booking {
+public class BookingModel {
     public String getId() {
         return id;
     }

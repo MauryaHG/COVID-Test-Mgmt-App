@@ -1,7 +1,7 @@
 package com.example.CovidGov;
 
 
-import com.example.CovidGov.AdminBooking.Booking;
+import com.example.CovidGov.AdminBooking.BookingModel;
 import com.vaadin.flow.router.Route;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class User {
     public boolean isCustomer;
     public boolean isReceptionist;
     public boolean isHealthcareWorker;
-    public List<Booking> bookings;
+    public List<BookingModel> bookings;
 
     public String getId() {
         return id;
@@ -87,11 +87,11 @@ public class User {
         isHealthcareWorker = healthcareWorker;
     }
 
-    public List<Booking> getBookings() {
+    public List<BookingModel> getBookings() {
         return bookings;
     }
 
-    public void setBookings(List<Booking> bookings) {
+    public void setBookings(List<BookingModel> bookings) {
         this.bookings = bookings;
     }
 

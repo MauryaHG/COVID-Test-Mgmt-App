@@ -2,7 +2,7 @@ package com.example.CovidGov.AdminBooking;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(value = { "QRcode" ,"test","qrcode"})
+@JsonIgnoreProperties(value = { "QRcode" ,"test","qrcode    "})
 public class AdditionalInfo {
 
     public String getqrcode() {

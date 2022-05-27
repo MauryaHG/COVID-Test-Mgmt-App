@@ -2,7 +2,7 @@ package com.example.CovidGov.AdminBooking;
 
 
 import com.example.CovidGov.User;
-import com.example.CovidGov.bookingsViewModel;
+import com.example.CovidGov.BookingsViewModel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -13,11 +13,11 @@ import com.vaadin.flow.server.VaadinSession;
 
 import java.util.List;
 
-public class editBookingsView extends FormLayout {
+public class EditBookingsView extends FormLayout {
 
-    private Booking currentBooking;
-    private final bookingsViewModel api = new bookingsViewModel();
-    private final bookingsView bookingView;
+    private BookingModel currentBooking;
+    private final BookingsViewModel api = new BookingsViewModel();
+    private final BookingsView bookingView;
 
     VaadinSession session = VaadinSession.getCurrent();   // Fetch current instance of VaadinSession to use its key-value collection of attributes.
     User currentUser = session.getAttribute(User.class);
@@ -32,7 +32,7 @@ public class editBookingsView extends FormLayout {
     Button delete = new Button("Delete");
     Button cancel = new Button("Cancel");
 
-    public editBookingsView(bookingsView bookingsView, List<Booking> booking) {
+    public EditBookingsView(BookingsView bookingsView, List<BookingModel> booking) {
         bookingView = bookingsView;
 
         addClassName("booking-form");
@@ -44,7 +44,7 @@ public class editBookingsView extends FormLayout {
                 createButtonsLayout());
     }
 
-    public void setBooking(Booking booking) {
+    public void setBooking(BookingModel booking) {
         this.currentBooking = booking;
         System.out.println(booking.getTestingSite());
         customerId.setValue(booking.getCustomer().getId());
@@ -64,14 +64,14 @@ public class editBookingsView extends FormLayout {
         return new HorizontalLayout(save, delete, cancel);
     }
 
-    private void cancelEvent(Booking currentBooking, String customerId, String testingSiteId, String startTime, String notes) {
+    private void cancelEvent(BookingModel currentBooking, String customerId, String testingSiteId, String startTime, String notes) {
         currentBooking.setStatus("CANCELLED");
         api.saveBooking(currentBooking, customerId, testingSiteId, startTime, notes);
         Notification.show("Booking Cancelled");
         bookingView.updateList();
     };
 
-    private void validateAndSave(Booking currentBooking, String customerId, String testingSiteId, String startTime, String notes) {
+    private void validateAndSave(BookingModel currentBooking, String customerId, String testingSiteId, String startTime, String notes) {
         api.saveBooking(currentBooking, customerId, testingSiteId, startTime, notes);
         bookingView.updateList();
         Notification.show("Booking updated.");
@@ -79,7 +79,7 @@ public class editBookingsView extends FormLayout {
 
 
 
-    public void deleteEvent(Booking currentBooking) {
+    public void deleteEvent(BookingModel currentBooking) {
         api.deleteBooking(currentBooking);
         bookingView.updateList();
         Notification.show("Booking deleted");

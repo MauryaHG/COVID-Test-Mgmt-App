@@ -1,6 +1,6 @@
 package com.example.CovidGov;
 
-import com.example.CovidGov.AdminBooking.Booking;
+import com.example.CovidGov.AdminBooking.BookingModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -29,9 +29,9 @@ public class ChangeBooking extends VerticalLayout {
     Dotenv dotenv = Dotenv.load();
     private final String myApiKey = dotenv.get("API_KEY");
 
-    bookingsViewModel api = new bookingsViewModel();
+    BookingsViewModel api = new BookingsViewModel();
 
-    Grid<com.example.CovidGov.AdminBooking.Booking> grid = new Grid<>(Booking.class);
+    Grid<BookingModel> grid = new Grid<>(BookingModel.class);
     private FormLayout formLayout = new FormLayout();
     TextField testingSiteId = new TextField("Testing SiteId");
     TextField startTime = new TextField("Date");
@@ -42,7 +42,7 @@ public class ChangeBooking extends VerticalLayout {
 
     private Button save = new Button("Save");
     private Button back = new Button("Back");
-    private Booking currentBooking;
+    private BookingModel currentBooking;
 
 
     public ChangeBooking() throws Exception{
@@ -81,7 +81,7 @@ public class ChangeBooking extends VerticalLayout {
         }
     }
 
-    public void editBooking(Booking booking) {
+    public void editBooking(BookingModel booking) {
         System.out.println("booking");
         System.out.println(booking.getTestingSite());
         if (booking == null) {
@@ -112,7 +112,7 @@ public class ChangeBooking extends VerticalLayout {
         return new HorizontalLayout(save, back);
     }
 
-    public void saveBooking(Booking booking, String customerId, String testingSiteId, String startTime){
+    public void saveBooking(BookingModel booking, String customerId, String testingSiteId, String startTime){
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date givenDate = inputFormat.parse(startTime);

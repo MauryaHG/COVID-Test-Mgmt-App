@@ -1,6 +1,6 @@
 package com.example.CovidGov;
 
-import com.example.CovidGov.AdminBooking.Booking;
+import com.example.CovidGov.AdminBooking.BookingModel;
 import com.example.CovidGov.TestingSite.TestingSite;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +14,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-public class bookingsViewModel {
+public class BookingsViewModel {
 
     private static String testSiteId;
 
@@ -26,7 +26,7 @@ public class bookingsViewModel {
     // Provide the root URL for the web service. All web service request URLs start with this root URL.
     private static final String rootUrl = "https://fit3077.com/api/v2";
 
-    public void saveBooking(Booking booking, String customerId, String testingSiteId, String startTime, String notes) {
+    public void saveBooking(BookingModel booking, String customerId, String testingSiteId, String startTime, String notes) {
         System.out.println();
         System.out.println(notes);
         String jsonString = "{" +
@@ -53,7 +53,7 @@ public class bookingsViewModel {
         }
     }
 
-    public  void deleteBooking(Booking booking) {
+    public  void deleteBooking(BookingModel booking) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest
                 .newBuilder(URI.create("https://fit3077.com/api/v2/booking/" + booking.getId()))
@@ -69,7 +69,7 @@ public class bookingsViewModel {
     }
 
 
-    public List<Booking> getBookings(String testingSiteId) throws JsonProcessingException {
+    public List<BookingModel> getBookings(String testingSiteId) throws JsonProcessingException {
         String siteIdUrl = rootUrl + "/testing-site/"+ testingSiteId;
         testSiteId = testingSiteId;
         HttpClient client = HttpClient.newHttpClient();
@@ -92,13 +92,13 @@ public class bookingsViewModel {
         TestingSite site =  objectMapper.readValue(response.body(), TestingSite.class);
 
 
-        for (Booking element : site.getBookings()) {
+        for (BookingModel element : site.getBookings()) {
             element.setTestingSite(site);
         }
         return site.getBookings();
     }
 
-    public List<Booking> getBookingsWithUserId(String UserId) throws JsonProcessingException {
+    public List<BookingModel> getBookingsWithUserId(String UserId) throws JsonProcessingException {
         String UserIdUrl = rootUrl + "/user/"+ UserId;
 
         HttpClient client = HttpClient.newHttpClient();
@@ -118,7 +118,7 @@ public class bookingsViewModel {
         System.out.println(response.body());
 
         User jsonNode = new ObjectMapper().readValue(response.body(), User.class);
-        List<Booking> bookingList = jsonNode.getBookings();
+        List<BookingModel> bookingList = jsonNode.getBookings();
 
         return bookingList;
     }
