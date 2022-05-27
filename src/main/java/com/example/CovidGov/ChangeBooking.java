@@ -2,6 +2,7 @@ package com.example.CovidGov;
 
 import com.example.CovidGov.AdminBooking.Booking;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -19,6 +20,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Route(value = " ChangeBooking")
 public class ChangeBooking extends VerticalLayout {
@@ -37,6 +41,7 @@ public class ChangeBooking extends VerticalLayout {
     String UserId = currentUser.getId();
 
     private Button save = new Button("Save");
+    private Button back = new Button("Back");
     private Booking currentBooking;
 
 
@@ -59,7 +64,11 @@ public class ChangeBooking extends VerticalLayout {
     private void configureGrid() {
         grid.addClassNames("user-bookings");
         grid.setSizeFull();
-        grid.setColumns("id","testingSite", "startTime", "status");
+        //grid.setColumns("id", "startTime", "status");
+        grid.setColumns("id");
+        grid.addColumn(booking -> booking.getTestingSite().getName()).setHeader("Testing site");
+        grid.addColumn("startTime");
+        grid.addColumn("status");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
     }
@@ -94,12 +103,56 @@ public class ChangeBooking extends VerticalLayout {
 
     private HorizontalLayout createButtonsLayout() {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        back.addThemeVariants(ButtonVariant.LUMO_ERROR);
         save.addClickListener(event -> saveBooking(currentBooking, UserId, testingSiteId.getValue(), startTime.getValue()));
+        back.addClickListener(event -> {
+            UI.getCurrent().getPage().setLocation("Booking");
+        });
 
-        return new HorizontalLayout(save);
+        return new HorizontalLayout(save, back);
     }
 
     public void saveBooking(Booking booking, String customerId, String testingSiteId, String startTime){
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date givenDate = inputFormat.parse(startTime);
+            Date currentDate = new Date();
+
+            if (givenDate.compareTo(currentDate) >= 0) {
+                String jsonString = "{" +
+                        "\"customerId\": \"" + customerId + "\"," +
+                        "\"testingSiteId\": \"" + testingSiteId + "\"," +
+                        "\"startTime\": \"" + startTime + "\"" +
+                        "}";
+                System.out.println(jsonString);
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest
+                        .newBuilder(URI.create("https://fit3077.com/api/v2/booking/" + booking.getId()))
+                        .header("accept", "application/json")
+                        .header("Authorization", myApiKey)
+                        .method("PATCH", HttpRequest.BodyPublishers.ofString(jsonString))
+                        .header("Content-Type", "application/json")
+                        .build();
+                try {
+                    HttpResponse response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                    System.out.println(response);
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                updateList();
+                Notification.show(("Booking updated."));
+            }
+            else{
+                Notification.show(("Cannot change date to before present!"));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        /*
+        Date currentDate = new Date();
+
+        if (givenDate )
         String jsonString = "{" +
                 "\"customerId\": \"" + customerId + "\"," +
                 "\"testingSiteId\": \"" + testingSiteId + "\"," +
@@ -123,6 +176,7 @@ public class ChangeBooking extends VerticalLayout {
 
         updateList();
         Notification.show(("Booking updated."));
+        */
     }
 }
 
