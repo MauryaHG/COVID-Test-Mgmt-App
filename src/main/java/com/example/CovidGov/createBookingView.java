@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -46,6 +47,8 @@ public class createBookingView extends VerticalLayout {
     DatePicker bookingDate = new DatePicker("Booking Date");
     TextField siteId = new TextField("Site ID");
 
+    private Button currentBookingsButton = new Button("Current Bookings");
+
 
     //retrieve api key from env variables
     Dotenv dotenv = Dotenv.load();
@@ -74,6 +77,10 @@ public class createBookingView extends VerticalLayout {
         checkboxGroup.addValueChangeListener(event -> notes = event.getValue().toString());
 
         add(new H1("Booking form"));
+        add(currentBookingsButton);
+        currentBookingsButton.addClickListener(event -> {
+            UI.getCurrent().getPage().setLocation("ChangeBooking");
+        });
         add(layout);
         layout.add(checkboxGroup);
         layout.add(formLayout);
