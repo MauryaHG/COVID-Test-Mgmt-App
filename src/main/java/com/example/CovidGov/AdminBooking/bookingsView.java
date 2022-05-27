@@ -51,7 +51,7 @@ public class bookingsView extends VerticalLayout {
     private void configureGrid() {
         grid.addClassNames("booking-grid");
         grid.setSizeFull();
-        grid.setColumns("id");
+        grid.setColumns("id", "status");
         grid.addColumn(booking -> booking.getTestingSite().getId()).setHeader("Testing site");
         grid.addColumn(booking -> booking.getCustomer().getGivenName()).setHeader("First Name");
         grid.addColumn(booking -> booking.getCustomer().getFamilyName()).setHeader("Second Name");

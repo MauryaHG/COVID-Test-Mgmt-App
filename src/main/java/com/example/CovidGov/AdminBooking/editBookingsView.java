@@ -30,7 +30,7 @@ public class editBookingsView extends FormLayout {
 
     Button save = new Button("Save");
     Button delete = new Button("Delete");
-
+    Button cancel = new Button("Cancel");
 
     public editBookingsView(bookingsView bookingsView, List<Booking> booking) {
         bookingView = bookingsView;
@@ -56,17 +56,25 @@ public class editBookingsView extends FormLayout {
     private HorizontalLayout createButtonsLayout() {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
-
+        cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addClickListener(event -> validateAndSave(currentBooking, customerId.getValue(), testingSiteId.getValue(), startTime.getValue(), notes.getValue()));
         delete.addClickListener(event -> deleteEvent(currentBooking));
+        cancel.addClickListener(event -> cancelEvent(currentBooking, customerId.getValue(), testingSiteId.getValue(), startTime.getValue(), notes.getValue()));
 
-        return new HorizontalLayout(save, delete);
+        return new HorizontalLayout(save, delete, cancel);
     }
+
+    private void cancelEvent(Booking currentBooking, String customerId, String testingSiteId, String startTime, String notes) {
+        currentBooking.setStatus("CANCELLED");
+        api.saveBooking(currentBooking, customerId, testingSiteId, startTime, notes);
+        Notification.show("Booking Cancelled");
+        bookingView.updateList();
+    };
 
     private void validateAndSave(Booking currentBooking, String customerId, String testingSiteId, String startTime, String notes) {
         api.saveBooking(currentBooking, customerId, testingSiteId, startTime, notes);
         bookingView.updateList();
-        Notification.show(("Booking updated."));
+        Notification.show("Booking updated.");
     }
 
 
@@ -74,6 +82,7 @@ public class editBookingsView extends FormLayout {
     public void deleteEvent(Booking currentBooking) {
         api.deleteBooking(currentBooking);
         bookingView.updateList();
+        Notification.show("Booking deleted");
     }
 
 

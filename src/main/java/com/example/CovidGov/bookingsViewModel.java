@@ -33,6 +33,7 @@ public class bookingsViewModel {
                 "\"customerId\": \"" + customerId + "\"," +
                 "\"testingSiteId\": \"" + testingSiteId + "\"," +
                 "\"startTime\": \"" + startTime + "\"," +
+                "\"status\": \"" + booking.getStatus() + "\"," +
                 "\"notes\": \"" + notes + "\"" +
                 "}";
         System.out.println(jsonString);
