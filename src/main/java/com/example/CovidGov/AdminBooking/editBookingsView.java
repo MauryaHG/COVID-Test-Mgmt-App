@@ -1,12 +1,15 @@
 package com.example.CovidGov.AdminBooking;
 
 
+import com.example.CovidGov.User;
 import com.example.CovidGov.apiTools;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.server.VaadinSession;
 
 import java.util.List;
 
@@ -15,6 +18,10 @@ public class editBookingsView extends FormLayout {
     private Booking currentBooking;
     private final apiTools api = new apiTools();
     private final bookingsView bookingView;
+
+    VaadinSession session = VaadinSession.getCurrent();   // Fetch current instance of VaadinSession to use its key-value collection of attributes.
+    User currentUser = session.getAttribute(User.class);
+
     TextField customerId = new TextField("Customer Id");
 
     TextField testingSiteId = new TextField("Testing SiteId");
@@ -39,10 +46,9 @@ public class editBookingsView extends FormLayout {
 
     public void setBooking(Booking booking) {
         this.currentBooking = booking;
-        System.out.println("sdfdsfdsfdsfdsfdsfdsfsfsd");
         System.out.println(booking.getTestingSite());
         customerId.setValue(booking.getCustomer().getId());
-        testingSiteId.setValue("7fbd25ee-5b64-4720-b1f6-4f6d4731260e");
+        testingSiteId.setValue(currentUser.getAdditionalInfo().getWorkingSite());
         startTime.setValue(booking.getStartTime());
         notes.setValue(booking.getNotes());
     }
@@ -59,14 +65,10 @@ public class editBookingsView extends FormLayout {
 
     private void validateAndSave(Booking currentBooking, String customerId, String testingSiteId, String startTime, String notes) {
         api.saveBooking(currentBooking, customerId, testingSiteId, startTime, notes);
+        Notification.show(("Booking updated."));
     }
 
-    private void validateAndSave(Booking currentBooking) {
-        System.out.println("currentBooking.getTestingSite()");
-        //System.out.println(currentBooking.getTestingSite().getId());
 
-        //binder.writeBean(this.currentBooking);
-    }
 
     public void deleteEvent(Booking currentBooking) {
         api.deleteBooking(currentBooking);

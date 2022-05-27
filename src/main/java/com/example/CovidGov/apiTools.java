@@ -4,6 +4,7 @@ import com.example.CovidGov.AdminBooking.Booking;
 import com.example.CovidGov.TestingSite.TestingSite;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vaadin.flow.server.VaadinSession;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.io.IOException;
@@ -20,7 +21,8 @@ public class apiTools {
     //load own api key from env variables
     Dotenv dotenv = Dotenv.load();
     private final String myApiKey = dotenv.get("API_KEY");
-
+    VaadinSession session = VaadinSession.getCurrent();   // Fetch current instance of VaadinSession to use its key-value collection of attributes.
+    User currentUser = session.getAttribute(User.class);
     // Provide the root URL for the web service. All web service request URLs start with this root URL.
     private static final String rootUrl = "https://fit3077.com/api/v2";
 
@@ -88,10 +90,9 @@ public class apiTools {
         ObjectMapper objectMapper = new ObjectMapper();
         TestingSite site =  objectMapper.readValue(response.body(), TestingSite.class);
 
-        System.out.println(site.getBookings());
+
         for (Booking element : site.getBookings()) {
-            System.out.println("element");
-            System.out.println(element.getId());
+            element.setTestingSite(site);
         }
         return site.getBookings();
     }

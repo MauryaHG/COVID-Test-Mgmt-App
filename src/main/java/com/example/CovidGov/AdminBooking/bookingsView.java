@@ -1,5 +1,6 @@
 package com.example.CovidGov.AdminBooking;
 
+import com.example.CovidGov.User;
 import com.example.CovidGov.apiTools;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vaadin.flow.component.grid.Grid;
@@ -7,6 +8,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 
 
 @Route(value="book")
@@ -18,14 +20,19 @@ public class bookingsView extends VerticalLayout {
     editBookingsView form;
     apiTools api = new apiTools();
 
+    VaadinSession session = VaadinSession.getCurrent();   // Fetch current instance of VaadinSession to use its key-value collection of attributes.
+    User currentUser = session.getAttribute(User.class);
+    String siteID = currentUser.getAdditionalInfo().getWorkingSite();
     public bookingsView() throws JsonProcessingException {
+
+        System.out.println(currentUser);
         addClassName("list-view");
         setSizeFull();
         configureGrid();
 
         add(grid);
 
-        form = new editBookingsView(this, api.getBookings("7fbd25ee-5b64-4720-b1f6-4f6d4731260e"));
+        form = new editBookingsView(this, api.getBookings(siteID));
         form.setWidth("25em");
         add(form);
         updateList();
@@ -35,7 +42,7 @@ public class bookingsView extends VerticalLayout {
 
     public void updateList()  {
         try{
-            grid.setItems(api.getBookings("7fbd25ee-5b64-4720-b1f6-4f6d4731260e"));
+            grid.setItems(api.getBookings(siteID));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
@@ -44,15 +51,14 @@ public class bookingsView extends VerticalLayout {
     private void configureGrid() {
         grid.addClassNames("booking-grid");
         grid.setSizeFull();
-        grid.setColumns("id","testingSite");
+        grid.setColumns("id");
+        grid.addColumn(booking -> booking.getTestingSite().getId()).setHeader("Testing site");
         grid.addColumn(booking -> booking.getCustomer().getGivenName()).setHeader("First Name");
         grid.addColumn(booking -> booking.getCustomer().getFamilyName()).setHeader("Second Name");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
 
     public void editBooking(Booking booking) {
-        System.out.println("booking");
-        System.out.println(booking.getTestingSite());
         if (booking == null) {
             closeEditor();
         } else {

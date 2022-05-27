@@ -31,7 +31,7 @@ public class Login extends VerticalLayout {
     private final String myApiKey = dotenv.get("API_KEY");
 
     // Provide the root URL for the web service. All web service request URLs start with this root URL.
-    private static final String rootUrl = "https://fit3077.com/api/v1";
+    private static final String rootUrl = "https://fit3077.com/api/v2";
 
 
     /**
@@ -136,7 +136,7 @@ public class Login extends VerticalLayout {
             if (currentUser.isHealthcareWorker){
                 UI.getCurrent().getPage().setLocation("Interview");
             } else if(currentUser.isReceptionist){
-                UI.getCurrent().getPage().setLocation("Booking");
+                UI.getCurrent().getPage().setLocation("book");
             } else if(currentUser.isCustomer){
                 UI.getCurrent().getPage().setLocation("Booking");
             }
