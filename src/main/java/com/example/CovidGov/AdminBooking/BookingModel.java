@@ -5,6 +5,10 @@ import com.example.CovidGov.TestingSite.TestingSite;
 import com.example.CovidGov.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+
+/**
+ * BookingModel class used to store booking information with additional information
+ */
 @JsonIgnoreProperties(value = { "QRcode" })
 public class BookingModel {
     public String getId() {

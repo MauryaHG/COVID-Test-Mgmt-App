@@ -14,6 +14,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
+/**
+ * Gives data between model and view
+ */
 public class BookingsViewModel {
 
     private static String testSiteId;
@@ -26,9 +29,16 @@ public class BookingsViewModel {
     // Provide the root URL for the web service. All web service request URLs start with this root URL.
     private static final String rootUrl = "https://fit3077.com/api/v2";
 
+    /**
+     * get user input and create objects to save to api using PATCH request
+     * @param booking booking object
+     * @param customerId id of the booking customer
+     * @param testingSiteId id of the testing site the booking needs to be added to
+     * @param startTime start time of test
+     * @param notes extra notes
+     */
     public void saveBooking(BookingModel booking, String customerId, String testingSiteId, String startTime, String notes) {
-        System.out.println();
-        System.out.println(notes);
+        // create jsonString for new booking
         String jsonString = "{" +
                 "\"customerId\": \"" + customerId + "\"," +
                 "\"testingSiteId\": \"" + testingSiteId + "\"," +
@@ -52,7 +62,10 @@ public class BookingsViewModel {
             e.printStackTrace();
         }
     }
-
+    /**
+     * delete a booking from api using booking id and DELETE request
+     * @param booking booking to be deleted
+     */
     public  void deleteBooking(BookingModel booking) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest
@@ -68,7 +81,11 @@ public class BookingsViewModel {
         }
     }
 
-
+    /**
+     * send GET request to web service to get all bookings of relevant testing site
+     * then data is sent back so new booking objects can be created.
+     * @param testingSiteId testing site id of admin
+     */
     public List<BookingModel> getBookings(String testingSiteId) throws JsonProcessingException {
         String siteIdUrl = rootUrl + "/testing-site/"+ testingSiteId;
         testSiteId = testingSiteId;
@@ -88,16 +105,21 @@ public class BookingsViewModel {
 
         System.out.println(response.body());
 
+        //create testing site objects
         ObjectMapper objectMapper = new ObjectMapper();
         TestingSite site =  objectMapper.readValue(response.body(), TestingSite.class);
 
-
+        //add testing site objects to the bookings object
         for (BookingModel element : site.getBookings()) {
             element.setTestingSite(site);
         }
         return site.getBookings();
     }
-
+    /**
+     * send GET request to web service to get all bookings of relevant testing site
+     * then data is sent back so new booking objects can be created.
+     * @param UserId User id of admin
+     */
     public List<BookingModel> getBookingsWithUserId(String UserId) throws JsonProcessingException {
         String UserIdUrl = rootUrl + "/user/"+ UserId;
 

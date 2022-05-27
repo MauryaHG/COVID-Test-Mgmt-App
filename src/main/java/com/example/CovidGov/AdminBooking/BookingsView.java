@@ -11,6 +11,9 @@ import com.vaadin.flow.server.VaadinSession;
 
 @Route(value="book")
 @PageTitle("Bookings")
+/**
+ * creates the user UI
+ */
 public class BookingsView extends VerticalLayout {
 
     Grid<BookingModel> grid = new Grid<>(BookingModel.class);
@@ -20,6 +23,7 @@ public class BookingsView extends VerticalLayout {
     VaadinSession session = VaadinSession.getCurrent();   // Fetch current instance of VaadinSession to use its key-value collection of attributes.
     User currentUser = session.getAttribute(User.class);
     String siteID = currentUser.getAdditionalInfo().getWorkingSite();
+
     public BookingsView() throws JsonProcessingException {
 
         System.out.println(currentUser);
@@ -37,6 +41,9 @@ public class BookingsView extends VerticalLayout {
                 editBooking(event.getValue()));
     }
 
+    /**
+     * updates the table wih the booking info for the admin to edit
+     */
     public void updateList()  {
         try{
             grid.setItems(api.getBookings(siteID));
@@ -45,6 +52,9 @@ public class BookingsView extends VerticalLayout {
             }
     }
 
+    /**
+     *  create grid UI elements
+     */
     private void configureGrid() {
         grid.addClassNames("booking-grid");
         grid.setSizeFull();
@@ -56,6 +66,10 @@ public class BookingsView extends VerticalLayout {
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
 
+    /**
+     *send data to BookingModel when user edits data
+     * @param booking current booking user wants to edit
+     */
     public void editBooking(BookingModel booking) {
         if (booking == null) {
             closeEditor();
@@ -66,6 +80,9 @@ public class BookingsView extends VerticalLayout {
         }
     }
 
+    /**
+     * close form
+     */
     private void closeEditor() {
         form.setVisible(false);
         removeClassName("editing");
